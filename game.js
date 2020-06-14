@@ -3,6 +3,7 @@ let score = 0;
 
 startBtn.addEventListener('click', function() {
     startBtn.style.display = 'none'
+    document.querySelector('#score').textContent = 'Score: ' + score
     document.querySelector('.game-area').style.backgroundColor = 'blue'
     createRectangle()
     randomCircle()
@@ -84,6 +85,7 @@ function checkForWin() {
         circle.style.display = 'none'
         circle.parentNode.removeChild(circle)
         score++
+        document.querySelector('#score').textContent = 'Score: ' + score
         randomCircle()
     }
 }
