@@ -3,6 +3,7 @@ let score = 0;
 
 startBtn.addEventListener('click', function() {
     startBtn.style.display = 'none'
+    document.querySelector('.game-area').style.backgroundColor = 'blue'
     createRectangle()
     randomCircle()
     assignControls()
@@ -18,37 +19,20 @@ function createRectangle() {
     div.style.background = 'red'
     div.classList.add('square')
     document.querySelector('.game-area').appendChild(div)
-    createGrid()
 }
 
 function randomCircle() {
+    let square = document.querySelector('.square')
     let newDiv = document.createElement('div')
     newDiv.style.borderRadius = '100%'
     newDiv.style.position = 'absolute'
-    newDiv.style.top = Math.random() * (580 - 100) + 100 + 'px'
+    newDiv.style.top = Math.random() * (580 - 100) + 100 + 'px' // add square.style.top here
     newDiv.style.left = Math.random() * (580 - 100) + 100 + 'px'
     newDiv.style.height = '20px'
     newDiv.style.width = '20px'
     newDiv.style.backgroundColor = 'yellow'
     newDiv.classList.add('circle')
     document.querySelector('.game-area').appendChild(newDiv)
-}
-
-function createGrid() {
-    let square = document.querySelector('.square')
-    let squareWidth = parseInt(square.style.width)
-    let squareHeight = parseInt(square.style.height)
-    // calculating how many squares can be created in each row, since we're dealing with a perfect square, whatever is calculated below becomes the number of squares in a row as well as the number of rows
-    let numberOfSquaresInX = 600 / squareWidth
-    // creating divs for every possible space in the parent div
-    for (let i = 0; i < numberOfSquaresInX * numberOfSquaresInX; i++) {
-        let div = document.createElement('div')
-        div.style.height = square.style.height
-        div.style.width = square.style.width
-        div.classList.add('grid-square')
-        div.style.backgroundColor = 'blue'
-        document.querySelector('.game-area').appendChild(div)
-    }
 }
 
 // calculate what grid the ball is in and what grid the square is in every time the square moves and compare them
@@ -85,13 +69,20 @@ function checkForWin() {
 
     let leftSideOfSquare = parseInt(square.style.left)
     let leftSideOfCircle = parseInt(circle.style.left)
+    let topOfSquare = parseInt(square.style.bottom) + parseInt(square.style.height)
+    let topOfCircle = parseInt(circle.style.top)
+    let bottomOfCircle = parseInt(circle.style.top) + parseInt(circle.style.height)
+    let bottomOfSquare = parseInt(square.style.bottom)
+
+    console.log(bottomOfSquare)
 
     let rightSideOfSquare = parseInt(square.style.left) + parseInt(square.style.width)
     let rightSideOfCircle = parseInt(circle.style.left) + parseInt(circle.style.width)
     // creating a hitbox for the square and circle and when the square touches the circles hitbox the user is given a point
-    if (rightSideOfSquare >= leftSideOfCircle && rightSideOfSquare <= rightSideOfCircle || leftSideOfSquare <= rightSideOfCircle && leftSideOfSquare >= leftSideOfCircle) {
+    if (rightSideOfSquare >= leftSideOfCircle && rightSideOfSquare <= rightSideOfCircle || leftSideOfSquare <= rightSideOfCircle && leftSideOfSquare >= leftSideOfCircle || topOfSquare >= bottomOfCircle && topOfSquare <= topOfCircle || bottomOfSquare <= topOfCircle && bottomOfSquare >= bottomOfCircle) {
         console.log('win')
         circle.style.display = 'none'
+        circle.parentNode.removeChild(circle)
         score++
         randomCircle()
     }
