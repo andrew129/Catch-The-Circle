@@ -1,13 +1,18 @@
 let startBtn = document.querySelector('#start')
 let score = 0;
+let intervalId;
+let seconds = 120
 
 startBtn.addEventListener('click', function() {
     startBtn.style.display = 'none'
+    document.querySelector('h1').style.display = 'none'
     document.querySelector('#score').textContent = 'Score: ' + score
     document.querySelector('.game-area').style.backgroundColor = 'blue'
     createRectangle()
     randomCircle()
     assignControls()
+    document.querySelector('#time').textContent = 'Seconds: ' + seconds
+    timer()
 })
 
 function createRectangle() {
@@ -20,6 +25,16 @@ function createRectangle() {
     div.style.background = 'red'
     div.classList.add('square')
     document.querySelector('.game-area').appendChild(div)
+}
+
+function timer() {
+    intervalId = setInterval(function() {
+        seconds--
+        document.querySelector('#time').textContent = 'Seconds: ' + seconds
+        if (seconds === 0) {
+            clearInterval(intervalId)
+        }
+    }, 1000)
 }
 
 function randomCircle() {
@@ -85,7 +100,15 @@ function checkForWin() {
         circle.parentNode.removeChild(circle)
         score++
         document.querySelector('#score').textContent = 'Score: ' + score
-        randomCircle()
+        if (score < 3) {
+            randomCircle()
+        }
+        else if (score > 3) {
+            randomCircle()
+            generateEnemies()
+        }
     }
 }
+
+// generate enemies
 
