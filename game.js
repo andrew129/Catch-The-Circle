@@ -15,7 +15,7 @@ function createRectangle() {
     div.style.width = '50px'
     div.style.height = '50px'
     div.style.position = 'absolute'
-    div.style.bottom = '0px'
+    div.style.top = '550px'
     div.style.left = '0px'
     div.style.background = 'red'
     div.classList.add('square')
@@ -27,7 +27,7 @@ function randomCircle() {
     let newDiv = document.createElement('div')
     newDiv.style.borderRadius = '100%'
     newDiv.style.position = 'absolute'
-    newDiv.style.top = Math.random() * (580 - 100) + 100 + 'px' // add square.style.top here
+    newDiv.style.top = Math.random() * (580 - 100) + 100 + 'px' // add code to avoid generating on top of the red square
     newDiv.style.left = Math.random() * (580 - 100) + 100 + 'px'
     newDiv.style.height = '20px'
     newDiv.style.width = '20px'
@@ -43,11 +43,11 @@ function assignControls() {
         switch(event.key) {
             case 'ArrowUp':
                 // taking away the px by parseint the top position and subtracting 20 from it every time the user touches the up arrow key
-                square.style.bottom = parseInt(square.style.bottom) + 20 + 'px'
+                square.style.top = parseInt(square.style.top) - 20 + 'px'
                 checkForWin()
                 break;
             case 'ArrowDown':
-                square.style.bottom = parseInt(square.style.bottom) - 20 + 'px'
+                square.style.top = parseInt(square.style.top) + 20 + 'px'
                 checkForWin()
                 break;
             case 'ArrowLeft':
@@ -70,22 +70,22 @@ function checkForWin() {
 
     let leftSideOfSquare = parseInt(square.style.left)
     let leftSideOfCircle = parseInt(circle.style.left)
-    let topOfSquare = parseInt(square.style.bottom) + parseInt(square.style.height)
+    let topOfSquare = parseInt(square.style.top)
     let topOfCircle = parseInt(circle.style.top)
     let bottomOfCircle = parseInt(circle.style.top) + parseInt(circle.style.height)
-    let bottomOfSquare = parseInt(square.style.bottom)
-
-    console.log(bottomOfSquare)
+    let bottomOfSquare = parseInt(square.style.top) + parseInt(square.style.height)
 
     let rightSideOfSquare = parseInt(square.style.left) + parseInt(square.style.width)
     let rightSideOfCircle = parseInt(circle.style.left) + parseInt(circle.style.width)
+
+    console.log(topOfSquare)
+    console.log(bottomOfCircle)
     // creating a hitbox for the square and circle and when the square touches the circles hitbox the user is given a point
-    if (rightSideOfSquare >= leftSideOfCircle && rightSideOfSquare <= rightSideOfCircle || leftSideOfSquare <= rightSideOfCircle && leftSideOfSquare >= leftSideOfCircle || topOfSquare >= bottomOfCircle && topOfSquare <= topOfCircle || bottomOfSquare <= topOfCircle && bottomOfSquare >= bottomOfCircle) {
-        console.log('win')
-        circle.style.display = 'none'
+    if (topOfCircle <= bottomOfSquare && topOfCircle >= topOfSquare && leftSideOfCircle >= leftSideOfSquare && leftSideOfCircle <= rightSideOfSquare || bottomOfCircle >= topOfSquare && bottomOfCircle <= bottomOfSquare && leftSideOfCircle >= leftSideOfSquare && leftSideOfCircle <= rightSideOfSquare) {
         circle.parentNode.removeChild(circle)
         score++
         document.querySelector('#score').textContent = 'Score: ' + score
         randomCircle()
     }
 }
+
