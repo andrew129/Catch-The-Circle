@@ -8,11 +8,15 @@ body {
 
 #score {
     color: yellow;
-    margin-right: 20px;
+    margin-right: 10px;
 }
 #time {
     color: yellow;
-    margin-left: 20px;
+    margin-left: 10px;
+}
+
+#lives {
+    color: yellow;
 }
 
 .score-area {
@@ -50,6 +54,10 @@ body {
     width: 50%;
     height: 50%;
 }
+
+/* .enemy {
+    clip-path: polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%);
+} */
 
 #start {
     background: yellow;

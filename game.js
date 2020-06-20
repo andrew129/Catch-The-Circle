@@ -1,12 +1,15 @@
 let startBtn = document.querySelector('#start')
 let score = 0;
+let lives = 3;
 let intervalId;
+let enemyInterval;
 let seconds = 120
 
 startBtn.addEventListener('click', function() {
     startBtn.style.display = 'none'
     document.querySelector('h1').style.display = 'none'
     document.querySelector('#score').textContent = 'Score: ' + score
+    document.querySelector('#lives').textContent = 'Lives: ' + lives
     document.querySelector('.game-area').style.backgroundColor = 'blue'
     createRectangle()
     randomCircle()
@@ -51,10 +54,10 @@ function randomCircle() {
     document.querySelector('.game-area').appendChild(newDiv)
 }
 
-// calculate what grid the ball is in and what grid the square is in every time the square moves and compare them
 function assignControls() {
     let square = document.querySelector('.square')
     document.onkeydown = function(event) {
+        event.preventDefault()
         switch(event.key) {
             case 'ArrowUp':
                 // taking away the px by parseint the top position and subtracting 20 from it every time the user touches the up arrow key
@@ -82,6 +85,7 @@ function assignControls() {
 function checkForWin() {
     let square = document.querySelector('.square')
     let circle = document.querySelector('.circle')
+    let enemy = document.querySelector('.enemy')
 
     let leftSideOfSquare = parseInt(square.style.left)
     let leftSideOfCircle = parseInt(circle.style.left)
@@ -91,24 +95,114 @@ function checkForWin() {
     let bottomOfSquare = parseInt(square.style.top) + parseInt(square.style.height)
 
     let rightSideOfSquare = parseInt(square.style.left) + parseInt(square.style.width)
-    let rightSideOfCircle = parseInt(circle.style.left) + parseInt(circle.style.width)
+    // let rightSideOfCircle = parseInt(circle.style.left) + parseInt(circle.style.width)
 
-    console.log(topOfSquare)
-    console.log(bottomOfCircle)
     // creating a hitbox for the square and circle and when the square touches the circles hitbox the user is given a point
     if (topOfCircle <= bottomOfSquare && topOfCircle >= topOfSquare && leftSideOfCircle >= leftSideOfSquare && leftSideOfCircle <= rightSideOfSquare || bottomOfCircle >= topOfSquare && bottomOfCircle <= bottomOfSquare && leftSideOfCircle >= leftSideOfSquare && leftSideOfCircle <= rightSideOfSquare) {
         circle.parentNode.removeChild(circle)
         score++
         document.querySelector('#score').textContent = 'Score: ' + score
-        if (score < 3) {
+        if (score <= 3) {
             randomCircle()
         }
         else if (score > 3) {
             randomCircle()
-            generateEnemies()
+            generateEnemies(200)
+        }
+        else if (score > 4) {
+            console.log(enemyInterval)
+            clearInterval(enemyInterval)
+            enemy.parentNode.removeChild(enemy)
+            console.log(enemy)
+            randomCircle()
+            generateEnemies(200)
+            assignControls()
         }
     }
 }
 
-// generate enemies
+function generateEnemies(num) {
+    let div = document.createElement('div')
+    div.style.height = '20px'
+    div.style.width = '20px'
+    div.style.backgroundColor = 'orange'
+    div.style.position = 'absolute'
+    div.style.top = Math.random() * (580 - 100) + 100 + 'px'
+    div.style.left = Math.random() * (580 - 100) + 100 + 'px'
+    div.classList.add('enemy')
+    document.querySelector('.game-area').appendChild(div)
+    enemyInterval = setInterval(function() {
+        animateEnemy('up')
+    }, num)
+}
+
+function animateEnemy(direction) {
+    let enemy = document.querySelector('.enemy')
+    let square = document.querySelector('.square')
+    let circle = document.querySelector('.circle')
+
+    let topOfOctagon = parseInt(enemy.style.top)
+    let bottomOfOctagon = parseInt(enemy.style.top) + 20
+    let leftOfOctagon = parseInt(enemy.style.left)
+    let rightOfOctagon = parseInt(enemy.style.left) + 20
+    let rightSideOfSquare = parseInt(square.style.left) + parseInt(square.style.width)
+    let bottomOfSquare = parseInt(square.style.top) + parseInt(square.style.height)
+    let topOfSquare = parseInt(square.style.top)
+    let leftSideOfSquare = parseInt(square.style.left)
+
+    if (direction === 'up') {
+        enemy.style.top = parseInt(enemy.style.top) - 20 + 'px'
+    }
+    else {
+        enemy.style.top = parseInt(enemy.style.top) + 20 + 'px'
+    }
+
+    if (parseInt(enemy.style.top) > 570) {
+        clearInterval(enemyInterval)
+        enemyInterval = setInterval(function() {
+            animateEnemy('up')
+        }, 200)
+    }
+
+    else if (parseInt(enemy.style.top) < 10) {
+        clearInterval(enemyInterval)
+        enemyInterval = setInterval(function() {
+            animateEnemy('down')
+        }, 200)
+    }
+
+    if (leftOfOctagon >= leftSideOfSquare && leftOfOctagon <= rightSideOfSquare && topOfOctagon >= topOfSquare && topOfOctagon <= bottomOfSquare) {
+        lives--
+        document.querySelector('#lives').textContent = 'Lives: ' + lives
+        square.parentNode.removeChild(square)
+        circle.parentNode.removeChild(circle)
+        enemy.parentNode.removeChild(enemy)
+        if (lives > 0) {
+            console.log('hello')
+            setTimeout(function() {
+                createRectangle()
+                randomCircle()
+                assignControls()
+                clearInterval(enemyInterval)
+                generateEnemies(200)
+            }, 500)
+        }
+        else if (lives === 0) {
+            clearInterval(enemyInterval)
+            document.querySelector('.game-area').textContent = ''
+            document.querySelector('.center').style.display = 'none'
+            let newText = document.createElement('h1')
+            newText.textContent = 'Game Over'
+            newText.style.color = 'yellow'
+            newText.style.position = 'absolute'
+            newText.style.left = '50%'
+            newText.style.top = '50%'
+            newText.style.transform = 'translate(-50%, -50%)'
+            document.querySelector('.game-area').appendChild(newText) 
+        }
+    }
+    
+}
+
+
 
