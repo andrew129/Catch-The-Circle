@@ -105,7 +105,7 @@ function checkForWin() {
         if (score <= 3) {
             randomCircle()
         }
-        else if (score > 3) {
+        else if (score === 4) {
             randomCircle()
             generateEnemies(200)
         }
@@ -116,7 +116,6 @@ function checkForWin() {
             console.log(enemy)
             randomCircle()
             generateEnemies(200)
-            assignControls()
         }
     }
 }
@@ -189,16 +188,14 @@ function animateEnemy(direction) {
         }
         else if (lives === 0) {
             clearInterval(enemyInterval)
-            document.querySelector('.game-area').textContent = ''
-            document.querySelector('.center').style.display = 'none'
+            document.querySelector('.center').textContent = ''
             let newText = document.createElement('h1')
             newText.textContent = 'Game Over'
             newText.style.color = 'yellow'
-            newText.style.position = 'absolute'
-            newText.style.left = '50%'
-            newText.style.top = '50%'
-            newText.style.transform = 'translate(-50%, -50%)'
-            document.querySelector('.game-area').appendChild(newText) 
+            let scoreText = document.createElement('h3')
+            scoreText.textContent = 'Your final score was ' + score
+            document.querySelector('.center').appendChild(newText) 
+            document.querySelector('.center').appendChild(scoreText)
         }
     }
     
