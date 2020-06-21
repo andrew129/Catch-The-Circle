@@ -6,7 +6,7 @@
 
 ## Preview
 
-![Preview](https://github.com/andrew129/Catch-The-Circle/blob/master/images/word.png?raw=true)
+![Preview](https://github.com/andrew129/Catch-The-Circle/blob/master/images/circle.png?raw=true)
 
 ## Author
 
