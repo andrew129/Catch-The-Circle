@@ -20,8 +20,8 @@ startBtn.addEventListener('click', function() {
 
 function createRectangle() {
     let div = document.createElement('div')
-    div.style.width = '50px'
-    div.style.height = '50px'
+    div.style.width = '40px'
+    div.style.height = '40px'
     div.style.position = 'absolute'
     div.style.top = '550px'
     div.style.left = '0px'
@@ -63,18 +63,22 @@ function assignControls() {
                 // taking away the px by parseint the top position and subtracting 20 from it every time the user touches the up arrow key
                 square.style.top = parseInt(square.style.top) - 20 + 'px'
                 checkForWin()
+                setBoundaries()
                 break;
             case 'ArrowDown':
                 square.style.top = parseInt(square.style.top) + 20 + 'px'
                 checkForWin()
+                setBoundaries()
                 break;
             case 'ArrowLeft':
                 square.style.left = parseInt(square.style.left) - 20 + 'px'
                 checkForWin()
+                setBoundaries()
                 break;
             case 'ArrowRight':
                 square.style.left = parseInt(square.style.left) + 20 + 'px'
                 checkForWin()
+                setBoundaries()
                 break;
             default: 
                 break;
@@ -95,7 +99,6 @@ function checkForWin() {
     let bottomOfSquare = parseInt(square.style.top) + parseInt(square.style.height)
 
     let rightSideOfSquare = parseInt(square.style.left) + parseInt(square.style.width)
-    // let rightSideOfCircle = parseInt(circle.style.left) + parseInt(circle.style.width)
 
     // creating a hitbox for the square and circle and when the square touches the circles hitbox the user is given a point
     if (topOfCircle <= bottomOfSquare && topOfCircle >= topOfSquare && leftSideOfCircle >= leftSideOfSquare && leftSideOfCircle <= rightSideOfSquare || bottomOfCircle >= topOfSquare && bottomOfCircle <= bottomOfSquare && leftSideOfCircle >= leftSideOfSquare && leftSideOfCircle <= rightSideOfSquare) {
@@ -107,32 +110,63 @@ function checkForWin() {
         }
         else if (score === 4) {
             randomCircle()
-            generateEnemies(200)
+            generateEnemies(200, 1)
         }
-        else if (score > 4) {
-            console.log(enemyInterval)
+        else if (score > 4 && score < 6) {
             clearInterval(enemyInterval)
             enemy.parentNode.removeChild(enemy)
-            console.log(enemy)
             randomCircle()
-            generateEnemies(200)
+            generateEnemies(200, 1)
+        }
+        else if (score >= 6) {
+            clearInterval(enemyInterval)
+            enemy.parentNode.removeChild(enemy)
+            randomCircle()
+            generateEnemies(200, 2)
         }
     }
 }
 
-function generateEnemies(num) {
-    let div = document.createElement('div')
-    div.style.height = '20px'
-    div.style.width = '20px'
-    div.style.backgroundColor = 'orange'
-    div.style.position = 'absolute'
-    div.style.top = Math.random() * (580 - 100) + 100 + 'px'
-    div.style.left = Math.random() * (580 - 100) + 100 + 'px'
-    div.classList.add('enemy')
-    document.querySelector('.game-area').appendChild(div)
-    enemyInterval = setInterval(function() {
-        animateEnemy('up')
-    }, num)
+// setting boundaries so the square doesn't go out of bounds
+function setBoundaries() {
+    let square = document.querySelector('.square')
+    let leftSideOfSquare = parseInt(square.style.left)
+    let rightSideOfSquare = parseInt(square.style.left) + parseInt(square.style.width)
+    let bottomOfSquare = parseInt(square.style.top) + parseInt(square.style.height)
+    let topOfSquare = parseInt(square.style.top)
+
+    if (leftSideOfSquare < 0) {
+        square.style.left = parseInt(square.style.left) + 20 + 'px'
+    }
+    else if (rightSideOfSquare > 600) {
+        square.style.left = parseInt(square.style.left) - 20 + 'px'
+    }
+    else if (topOfSquare < 0) {
+        square.style.top = parseInt(square.style.top) + 20 + 'px'
+    }
+    else if (bottomOfSquare >= 610) {
+        console.log(square.style.top)
+        square.style.top = parseInt(square.style.top) - 20 + 'px'
+    }
+}
+
+function generateEnemies(num, numOfEnemies) {
+    console.log(numOfEnemies)
+    for (let i = 0; i < numOfEnemies; i++) {
+        let div = document.createElement('div')
+        div.style.height = '20px'
+        div.style.width = '20px'
+        div.style.margin = '20px'
+        div.style.backgroundColor = 'orange'
+        div.style.position = 'absolute'
+        div.style.top = Math.random() * (580 - 100) + 100 + 'px'
+        div.style.left = Math.random() * (580 - 100) + 100 + 'px'
+        div.classList.add('enemy')
+        document.querySelector('.game-area').appendChild(div)
+        enemyInterval = setInterval(function() {
+            animateEnemy('up')
+        }, num)
+    }
 }
 
 function animateEnemy(direction) {
@@ -141,9 +175,7 @@ function animateEnemy(direction) {
     let circle = document.querySelector('.circle')
 
     let topOfOctagon = parseInt(enemy.style.top)
-    let bottomOfOctagon = parseInt(enemy.style.top) + 20
     let leftOfOctagon = parseInt(enemy.style.left)
-    let rightOfOctagon = parseInt(enemy.style.left) + 20
     let rightSideOfSquare = parseInt(square.style.left) + parseInt(square.style.width)
     let bottomOfSquare = parseInt(square.style.top) + parseInt(square.style.height)
     let topOfSquare = parseInt(square.style.top)
@@ -163,7 +195,7 @@ function animateEnemy(direction) {
         }, 200)
     }
 
-    else if (parseInt(enemy.style.top) < 10) {
+    else if (parseInt(enemy.style.top) < 20) {
         clearInterval(enemyInterval)
         enemyInterval = setInterval(function() {
             animateEnemy('down')
@@ -177,7 +209,6 @@ function animateEnemy(direction) {
         circle.parentNode.removeChild(circle)
         enemy.parentNode.removeChild(enemy)
         if (lives > 0) {
-            console.log('hello')
             setTimeout(function() {
                 createRectangle()
                 randomCircle()
